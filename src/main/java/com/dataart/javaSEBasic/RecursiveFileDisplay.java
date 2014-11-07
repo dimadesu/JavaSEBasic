@@ -14,26 +14,19 @@ public class RecursiveFileDisplay {
 			File[] files = dir.listFiles();
 			for (File file : files) {
 				if (file.isDirectory()) {
-					//System.out.println("directory:" + file.getCanonicalPath());
-					System.out.println("directory:" + file.getName());
+					System.out.println("Directory: " + file.getName());
 					displayDirectoryContents(file);
 				} else {
-					System.out.println("     file canonical path:" + file.getCanonicalPath());
-					//System.out.println("     file parent:" + file.getParent());
+					System.out.println("File: " + file.getCanonicalPath());
 					
-					//System.out.println("  file:" + file.getName());
+					String extension = getExtension(file);
+					String destDirectory = file.getParent();
+					String zipFilePath = file.getCanonicalPath();
 					
-					String extension = getExtension(file.getName());
-					
-					if(extension.contains("zip")) {
+					if(extension.contains("zip") || extension.contains("gz")) {
 						UnzipUtility unzipper = new UnzipUtility();
-				    	UUID idOne = UUID.randomUUID();
-						String destDirectory = file.getParent() + File.separator + idOne.toString();//file.getName();
-						String zipFilePath = file.getCanonicalPath();
-						unzipper.unzip(zipFilePath, destDirectory);
-						File destDirectoryFile = new File (destDirectory);
-						displayDirectoryContents(destDirectoryFile);
-					} 
+						unzipper.unzip(zipFilePath, destDirectory, extension);
+					}
 				}
 			}
 		} catch (IOException e) {
@@ -41,12 +34,19 @@ public class RecursiveFileDisplay {
 		}
 	}
 	
-	private String getExtension (String fileName) {
+	private String getExtension (File file) {
 		String extension = "";
+		
+		if(!file.isDirectory()) {
 
-		int i = fileName.lastIndexOf('.');
-		if (i > 0) {
-		    extension = fileName.substring(i+1);
+			String fileName = file.getName();
+			
+			int i = fileName.lastIndexOf('.');
+			
+			if (i > 0) {
+			    extension = fileName.substring(i+1);
+			}
+			
 		}
 		
 		return extension;
