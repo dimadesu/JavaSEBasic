@@ -30,17 +30,10 @@ public class App
 	    	for(String listItem : App.textFiles) {
 	    	    
 	    		System.out.println(listItem);
-				
-				// Small file
-				//lines.addAll( text.readSmallTextFile(listItem) );
-
-				// Large file - use some buffering
-				lines.addAll( text.readLargerTextFile(listItem) );
+	    		
+	    		text.readLargerTextFile(listItem, lines);
 	    		
 	    	}
-	    	
-			// Small
-	    	//text.writeSmallTextFile(lines, targetTextFilePath);
 	    	
 	    	// Large
 			text.writeLargerTextFile(targetTextFilePath, lines);

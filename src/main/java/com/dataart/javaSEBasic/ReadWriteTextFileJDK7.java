@@ -38,16 +38,21 @@ public class ReadWriteTextFileJDK7 {
 
 	// For larger files
 
-	List<String> readLargerTextFile(String aFileName) throws IOException {
+	void readLargerTextFile(String aFileName, List<String> linesAllFiles) throws IOException {
 		Path path = Paths.get(aFileName);
-		List<String> lines = new ArrayList<String>();
+		Integer lineCounter = 0;
 		try (Scanner scanner = new Scanner(path, ENCODING.name())) {
 			while (scanner.hasNextLine()) {
 				// process each line in some way
-				lines.add(scanner.nextLine());
+				String line = scanner.nextLine();
+				if (!linesAllFiles.contains(line) && !line.isEmpty()) {
+					linesAllFiles.add(line);
+					System.out.println("Added line:" + line);
+				}
+				lineCounter++;
+				System.out.println("Processed line #" + lineCounter);
 			}
 		}
-		return lines;
 	}
 
 	List<String> readLargerTextFileAlternate(String aFileName)
