@@ -11,8 +11,12 @@ public class App
     	
     	// TODO: Hardcoded path
     	String startDirPath = "D:/Users/dantonov/Docs/Work/000 Java Training/01 Java SE course/99 try/";
-    	String targetTextFile = "phones.txt_emails.txt";
-    	String targetTextFilePath = startDirPath + targetTextFile;
+    	String targetFileName = "phones.txt_emails.txt";
+    	String targetPhonesFileName = "phones.txt";
+    	String targetEmailsFileName = "emails.txt";
+    	String targetTextFilePath = startDirPath + targetFileName;
+    	String targetPhonesFilePath = startDirPath + targetPhonesFileName;
+    	String targetEmailsFilePath = startDirPath + targetEmailsFileName;
     	
     	File startDirFile = new File(startDirPath);
     	
@@ -21,7 +25,7 @@ public class App
     	// Unarchive recursively. Collect text files
     	recurser.displayDirectoryContents(startDirFile);
     	
-    	ReadWriteTextFileJDK7 text = new ReadWriteTextFileJDK7();
+    	ReadWriteTextFileJDK7 readerWriter = new ReadWriteTextFileJDK7();
     	List<String> lines = new ArrayList<String>();
 
 		try {
@@ -31,12 +35,15 @@ public class App
 	    	    
 	    		System.out.println(listItem);
 	    		
-	    		text.readLargerTextFile(listItem, lines);
+	    		readerWriter.readLargerTextFile(listItem, lines);
 	    		
 	    	}
 	    	
-	    	// Large
-			text.writeLargerTextFile(targetTextFilePath, lines);
+			readerWriter.writeLargerTextFile(targetTextFilePath, lines);
+			
+			App app = new App ();
+			
+			app.phoneParser(lines, targetPhonesFilePath);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -51,6 +58,61 @@ public class App
     	App.textFilesCounter++;
     	App.textFiles.add(path);
     	System.out.println("Text file found. Total text files so far: " + textFilesCounter); 
+    }
+    
+    private void phoneParser (List<String> lines, String targetPhonesFilePath) {
+    	List<String> phones = new ArrayList<String>();
+    	for(String line: lines)
+    	{
+    		// Everything before @ is phone plus email name
+    		Integer atSignIndex = line.indexOf("@");
+    		
+    		if(atSignIndex == -1) {
+    			continue;
+    		}
+    		
+    		String phoneEmail = line.substring(0, atSignIndex);
+    		
+    		// Phone without email part
+    		Integer phoneEndIndex = phoneEmail.lastIndexOf(" ");
+    		
+    		if(phoneEndIndex == -1) {
+    			continue;
+    		}
+    		
+    		String phoneDirty = line.substring(0, phoneEndIndex);
+    		
+    		// Collect digits 
+    		char[] phoneCharArray = phoneDirty.toCharArray();
+    		List <Character> digitsList =  new ArrayList<Character>();
+    		
+    		for(Character ch: phoneCharArray)
+    		{
+    			if (Character.isDigit(ch)) {
+    				digitsList.add(ch);
+    			}
+    		}
+    		
+		    // ArrayList to String 
+    		StringBuilder builder = new StringBuilder(digitsList.size());
+		    for(Character ch: digitsList)
+		    {
+		        builder.append(ch);
+		    }
+    		
+    		phones.add(builder.toString());
+    	}
+    	System.out.println("Phones collected:");
+    	for(String phone: phones)
+		{
+    		System.out.println(phone);
+		}
+    	ReadWriteTextFileJDK7 readerWriter = new ReadWriteTextFileJDK7();
+    	try {
+			readerWriter.writeLargerTextFile(targetPhonesFilePath, phones);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
 }
