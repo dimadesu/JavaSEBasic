@@ -1,11 +1,7 @@
 package com.dataart.javaSEBasic;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
-import java.util.zip.ZipInputStream;
 
 public class RecursiveFileDisplay {
 
@@ -26,6 +22,8 @@ public class RecursiveFileDisplay {
 					if(extension.contains("zip") || extension.contains("gz")) {
 						UnzipUtility unzipper = new UnzipUtility();
 						unzipper.unzip(zipFilePath, destDirectory, extension);
+					} else {
+						App.textFileFound(file.getCanonicalPath());
 					}
 				}
 			}
@@ -34,7 +32,7 @@ public class RecursiveFileDisplay {
 		}
 	}
 	
-	private String getExtension (File file) {
+	public String getExtension (File file) {
 		String extension = "";
 		
 		if(!file.isDirectory()) {

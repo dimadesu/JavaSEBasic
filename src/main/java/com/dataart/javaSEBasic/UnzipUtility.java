@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.UUID;
  
 /**
  * This utility extracts files and directories of a standard zip file to
@@ -19,25 +18,32 @@ import java.util.UUID;
  *
  */
 public class UnzipUtility {
+	
     /**
      * Size of the buffer to read/write data
      */
     private static final int BUFFER_SIZE = 4096;
+    
     /**
      * Extracts a zip file specified by the zipFilePath to a directory specified by
      * destDirectory (will be created if does not exists)
-     * @param zipFilePath
+     * @param archiveFilePath
      * @param destDirectory
      * @throws IOException
      */
-    public void unzip(String zipFilePath, String destDirectory, String extension) throws IOException {
+    public void unzip(String archiveFilePath, String destDirectory, String extension) throws IOException {
         
-        System.out.println(extension + " archive found: " + zipFilePath);
+        System.out.println(extension + " archive found: " + archiveFilePath);
+        
+        File archiveFile = new File(archiveFilePath);
+        
+        UUID uuid = UUID.randomUUID();
+        
+        String unzippedName = archiveFile.getName() + "_" + uuid.toString();
     	
     	if(extension.contains("zip")) {
         	
-        	UUID uuid = UUID.randomUUID();
-        	destDirectory = destDirectory + File.separator + uuid.toString();
+    		destDirectory = destDirectory + File.separator + unzippedName;
         	File destDir = new File(destDirectory);
             if(!destDir.exists()) {
             	destDir.mkdir();            	
@@ -45,7 +51,7 @@ public class UnzipUtility {
             
             System.out.println("Unzipping into directory: " + destDir);
         	
-        	ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
+        	ZipInputStream zipIn = new ZipInputStream(new FileInputStream(archiveFilePath));
 	        ZipEntry entry = zipIn.getNextEntry();
         
 	        // iterates over entries in the zip file
@@ -69,16 +75,15 @@ public class UnzipUtility {
         
         } else if (extension.contains("gz")) {
         
-        	GZIPInputStream zipIn = new GZIPInputStream(new FileInputStream(zipFilePath));
+        	GZIPInputStream zipIn = new GZIPInputStream(new FileInputStream(archiveFilePath));
         	
-        	UUID uuid = UUID.randomUUID();
-        	
-        	String ungrzipedFile = destDirectory + File.separator + uuid.toString() + ".txt";
+        	String ungrzipedFile = destDirectory + File.separator + unzippedName + ".txt";
         	
         	extractFile(zipIn, ungrzipedFile);
         
         }
     }
+    
     /**
      * Extracts a zip entry (file entry)
      * @param zipIn
@@ -94,5 +99,13 @@ public class UnzipUtility {
             bos.write(bytesIn, 0, read);
         }
         bos.close();
+        
+        // Add to text files if extracted is not archive
+        File extractedFile = new File (filePath);
+        RecursiveFileDisplay recurser = new RecursiveFileDisplay();
+        String ext = recurser.getExtension(extractedFile);
+        if (!ext.contains("zip") && !ext.contains("gz")) {
+        	App.textFileFound(filePath);
+        }
     }
 }
