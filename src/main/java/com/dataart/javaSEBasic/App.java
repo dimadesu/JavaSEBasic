@@ -63,7 +63,10 @@ public class App
     }
     
     private void phoneParser (List<String> lines, String targetPhonesFilePath) {
+    	
     	List<String> phones = new ArrayList<String>();
+    	
+    	// Strip phones to digits only format 
     	for(String line: lines)
     	{
     		// Everything before @ is phone plus email name
@@ -104,17 +107,43 @@ public class App
     		
     		phones.add(builder.toString());
     	}
+    	
+    	// Replace codes
+    	List<String> phonesReplaced = new ArrayList<String>();
+    	for (String phone: phones) {
+    		String code = phone.substring(1,4);
+    		String replacement = null;
+    		if(code.equals("101")) {
+    			replacement = "401";
+    		} else if(code.equals("202")) {
+    			replacement = "802";
+    		} else if(code.equals("301")) {
+    			replacement = "321";
+    		}
+    		if(replacement != null) {
+    			phone = phone.charAt(0) + replacement + phone.substring(4);
+    		}
+    		phonesReplaced.add("+" + phone);
+    	}
+    	
+    	// Sort
+    	java.util.Collections.sort(phonesReplaced);
     	System.out.println("Phones collected:");
-    	for(String phone: phones)
+    	
+    	// Log results to console
+    	for(String phone: phonesReplaced)
 		{
     		System.out.println(phone);
 		}
+    	
+    	// Save results to a file
     	ReadWriteTextFileJDK7 readerWriter = new ReadWriteTextFileJDK7();
     	try {
-			readerWriter.writeLargerTextFile(targetPhonesFilePath, phones);
+			readerWriter.writeLargerTextFile(targetPhonesFilePath, phonesReplaced);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+    	
     }
     
     private void emailParser (List<String> lines, String targetEmailsFilePath) {
@@ -131,11 +160,18 @@ public class App
     			}
 			}
     	}
+    	
+    	// Sort
+    	java.util.Collections.sort(emails);
+    	
+    	// Log
     	System.out.println("Emails collected:");
     	for(String email: emails)
 		{
     		System.out.println(email);
 		}
+    	
+    	// Write to file
     	ReadWriteTextFileJDK7 readerWriter = new ReadWriteTextFileJDK7();
     	try {
 			readerWriter.writeLargerTextFile(targetEmailsFilePath, emails);
