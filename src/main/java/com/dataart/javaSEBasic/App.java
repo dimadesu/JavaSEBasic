@@ -2,6 +2,8 @@ package com.dataart.javaSEBasic;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Matcher;
 
@@ -10,21 +12,36 @@ public class App
     public static void main( String[] args )
     {
     	
-    	// TODO: Hardcoded path
-    	String startDirPath = "D:/Users/dantonov/Docs/Work/000 Java Training/01 Java SE course/99 try/";
+    	// Path to the folder jar is executed from
+    	String jarPath = App.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    	String jarDecodedPath = null;
+    	String jarFolder = null;
+    	try {
+			jarDecodedPath = URLDecoder.decode(jarPath, "UTF-8");
+			File jarFile = new File (jarDecodedPath);
+			jarFolder = jarFile.getParent() + "/";
+			System.out.println(jarFolder);
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+    	String inputFolder = "input/";
+    	String tempFolder = "temp/";
+    	String outputFolder = "output/";
+    	String startDirPath = jarFolder + inputFolder;
+    	String targetDirPath = jarFolder + tempFolder;
     	String targetFileName = "phones.txt_emails.txt";
     	String targetPhonesFileName = "phones.txt";
     	String targetEmailsFileName = "emails.txt";
-    	String targetTextFilePath = startDirPath + targetFileName;
-    	String targetPhonesFilePath = startDirPath + targetPhonesFileName;
-    	String targetEmailsFilePath = startDirPath + targetEmailsFileName;
+    	String targetTextFilePath = targetDirPath + targetFileName;
+    	String targetPhonesFilePath = targetDirPath + targetPhonesFileName;
+    	String targetEmailsFilePath = targetDirPath + targetEmailsFileName;
     	
     	File startDirFile = new File(startDirPath);
     	
     	RecursiveFileDisplay recurser = new RecursiveFileDisplay();
     	
     	// Unarchive recursively. Collect text files
-    	recurser.displayDirectoryContents(startDirFile);
+    	recurser.displayDirectoryContents(startDirFile, targetDirPath);
     	
     	ReadWriteTextFileJDK7 readerWriter = new ReadWriteTextFileJDK7();
     	List<String> lines = new ArrayList<String>();

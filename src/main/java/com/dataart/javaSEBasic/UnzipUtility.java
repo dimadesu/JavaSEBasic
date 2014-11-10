@@ -72,7 +72,7 @@ public class UnzipUtility {
 	        zipIn.close();
 	        
 	        RecursiveFileDisplay recurser = new RecursiveFileDisplay();
-	        recurser.displayDirectoryContents(destDir);
+	        recurser.displayDirectoryContents(destDir, null);
         
         } else if (extension.contains("gz")) {
         

@@ -5,18 +5,18 @@ import java.io.IOException;
 
 public class RecursiveFileDisplay {
 
-	public void displayDirectoryContents(File dir) {
+	public void displayDirectoryContents(File sourceDir, String targetDirPath) {
 		try {
-			File[] files = dir.listFiles();
+			File[] files = sourceDir.listFiles();
 			for (File file : files) {
+				String destDirectory = targetDirPath == null ? file.getParent() : targetDirPath;
 				if (file.isDirectory()) {
 					System.out.println("Directory: " + file.getName());
-					displayDirectoryContents(file);
+					displayDirectoryContents(file, null);
 				} else {
 					System.out.println("File: " + file.getCanonicalPath());
 					
 					String extension = getExtension(file);
-					String destDirectory = file.getParent();
 					String zipFilePath = file.getCanonicalPath();
 					
 					if(extension.contains("zip") || extension.contains("gz")) {
