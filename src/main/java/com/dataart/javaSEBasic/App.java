@@ -1,6 +1,7 @@
 package com.dataart.javaSEBasic;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class App 
@@ -10,17 +11,43 @@ public class App
     	
     	// TODO: Hardcoded path
     	String startDirPath = "D:/Users/dantonov/Docs/Work/000 Java Training/01 Java SE course/99 try/";
+    	String targetTextFile = "phones.txt_emails.txt";
+    	String targetTextFilePath = startDirPath + targetTextFile;
     	
     	File startDirFile = new File(startDirPath);
     	
     	RecursiveFileDisplay recurser = new RecursiveFileDisplay();
     	
+    	// Unarchive recursively. Collect text files
     	recurser.displayDirectoryContents(startDirFile);
     	
-    	// Print all the text file found in the end
-    	for(String listItem : App.textFiles) {
-    	    System.out.println(listItem);
-    	}
+    	ReadWriteTextFileJDK7 text = new ReadWriteTextFileJDK7();
+    	List<String> lines = new ArrayList<String>();
+
+		try {
+	    	
+	    	// Print all the text file found in the end
+	    	for(String listItem : App.textFiles) {
+	    	    
+	    		System.out.println(listItem);
+				
+				// Small file
+				//lines.addAll( text.readSmallTextFile(listItem) );
+
+				// Large file - use some buffering
+				lines.addAll( text.readLargerTextFile(listItem) );
+	    		
+	    	}
+	    	
+			// Small
+	    	//text.writeSmallTextFile(lines, targetTextFilePath);
+	    	
+	    	// Large
+			text.writeLargerTextFile(targetTextFilePath, lines);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
         
     }
     
