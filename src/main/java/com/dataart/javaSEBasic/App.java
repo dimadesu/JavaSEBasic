@@ -111,8 +111,15 @@ public class App
     	// Replace codes
     	List<String> phonesReplaced = new ArrayList<String>();
     	for (String phone: phones) {
+    		
+    		// Skip too short numbers
+    		if(phone.length() <= 5) {
+				continue;    			
+    		}
+    		
     		String code = phone.substring(1,4);
     		String replacement = null;
+    		
     		if(code.equals("101")) {
     			replacement = "401";
     		} else if(code.equals("202")) {
@@ -120,10 +127,14 @@ public class App
     		} else if(code.equals("301")) {
     			replacement = "321";
     		}
+    		
     		if(replacement != null) {
     			phone = phone.charAt(0) + replacement + phone.substring(4);
     		}
-    		phonesReplaced.add("+" + phone);
+    		
+    		// Change phone to format in the task
+    		phone = "+" + phone.charAt(0) + " (" + phone.substring(1, 5) + ") " + phone.substring(6);
+    		phonesReplaced.add(phone);
     	}
     	
     	// Sort

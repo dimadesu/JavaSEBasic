@@ -37,6 +37,7 @@ public class UnzipUtility {
         
         File archiveFile = new File(archiveFilePath);
         
+        // Generate random string to avoid name conflicts
         UUID uuid = UUID.randomUUID();
         
         String unzippedName = archiveFile.getName() + "_" + uuid.toString();
