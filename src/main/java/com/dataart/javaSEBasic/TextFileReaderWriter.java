@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class ReadWriteTextFileJDK7 {
+public class TextFileReaderWriter {
 
-	final static String FILE_NAME = "C:\\Temp\\input.txt";
-	final static String OUTPUT_FILE_NAME = "C:\\Temp\\output.txt";
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 
 	// For smaller files

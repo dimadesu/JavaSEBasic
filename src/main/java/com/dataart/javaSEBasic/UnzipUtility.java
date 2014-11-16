@@ -20,11 +20,6 @@ import java.util.zip.ZipInputStream;
 public class UnzipUtility {
 	
     /**
-     * Size of the buffer to read/write data
-     */
-    private static final int BUFFER_SIZE = 4096;
-    
-    /**
      * Extracts a zip file specified by the zipFilePath to a directory specified by
      * destDirectory (will be created if does not exists)
      * @param archiveFilePath
@@ -71,8 +66,8 @@ public class UnzipUtility {
 	        }
 	        zipIn.close();
 	        
-	        RecursiveFileDisplay recurser = new RecursiveFileDisplay();
-	        recurser.displayDirectoryContents(destDir, null);
+	        RecursiveFileIterator recurser = new RecursiveFileIterator();
+	        recurser.iterateDirectoryContents(destDir, null);
         
         } else if (extension.contains("gz")) {
         
@@ -84,6 +79,11 @@ public class UnzipUtility {
         
         }
     }
+    
+    /**
+     * Size of the buffer to read/write data
+     */
+    private int BUFFER_SIZE = 4096;
     
     /**
      * Extracts a zip entry (file entry)
@@ -103,7 +103,7 @@ public class UnzipUtility {
         
         // Add to text files if extracted is not archive
         File extractedFile = new File (filePath);
-        RecursiveFileDisplay recurser = new RecursiveFileDisplay();
+        RecursiveFileIterator recurser = new RecursiveFileIterator();
         String ext = recurser.getExtension(extractedFile);
         if (!ext.contains("zip") && !ext.contains("gz")) {
         	App.textFileFound(filePath);

@@ -3,16 +3,16 @@ package com.dataart.javaSEBasic;
 import java.io.File;
 import java.io.IOException;
 
-public class RecursiveFileDisplay {
-
-	public void displayDirectoryContents(File sourceDir, String targetDirPath) {
+public class RecursiveFileIterator {
+	
+	public void iterateDirectoryContents(File sourceDir, String targetDirPath) {
 		try {
 			File[] files = sourceDir.listFiles();
 			for (File file : files) {
 				String destDirectory = targetDirPath == null ? file.getParent() : targetDirPath;
 				if (file.isDirectory()) {
 					System.out.println("Directory: " + file.getName());
-					displayDirectoryContents(file, null);
+					iterateDirectoryContents(file, null);
 				} else {
 					System.out.println("File: " + file.getCanonicalPath());
 					
