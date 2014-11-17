@@ -1,17 +1,19 @@
-package com.dataart.javaSEBasic;
+package com.dataart.javaSEBasic.parsers;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.dataart.javaSEBasic.file.TextFileReaderWriter;
+
 public class EmailParser {
 	
 	public void parse(List<String> lines, String targetEmailsFilePath) {
 		List<String> emails = new ArrayList<String>();
-		EmailValidator validator = new EmailValidator();
+		EmailMatcher validator = new EmailMatcher();
 		for (String line : lines) {
-			Matcher matcher = validator.validate(line);
+			Matcher matcher = validator.find(line);
 			while (matcher.find()) {
 				String email = matcher.group();
 				if (!emails.contains(email)) {

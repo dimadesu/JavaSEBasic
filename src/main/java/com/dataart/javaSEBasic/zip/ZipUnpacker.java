@@ -1,4 +1,4 @@
-package com.dataart.javaSEBasic;
+package com.dataart.javaSEBasic.zip;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,8 +10,11 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import com.dataart.javaSEBasic.App;
+import com.dataart.javaSEBasic.file.RecursiveFileIterator;
  
-public class UnzipUtility {
+public class ZipUnpacker {
 	
     public String unzip(String archiveFilePath, String destDirectory, String extension, Boolean isUnzipRecursively) throws IOException {
         

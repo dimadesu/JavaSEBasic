@@ -1,9 +1,10 @@
-package com.dataart.javaSEBasic;
+package com.dataart.javaSEBasic.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import com.dataart.javaSEBasic.App;
+import com.dataart.javaSEBasic.zip.ZipUnpacker;
 
 public class RecursiveFileIterator {
 	
@@ -28,7 +29,7 @@ public class RecursiveFileIterator {
 						String zipFilePath = file.getCanonicalPath();
 
 						if (extension.contains("zip") || extension.contains("gz")) {
-							UnzipUtility unzipper = new UnzipUtility();
+							ZipUnpacker unzipper = new ZipUnpacker();
 							unzipper.unzip(zipFilePath, destDirectory, extension, true);
 						} else {
 							App.textFileFound(file.getCanonicalPath());

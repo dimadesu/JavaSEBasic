@@ -1,19 +1,20 @@
 package com.dataart.javaSEBasic;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import com.dataart.javaSEBasic.file.TextFileReaderWriter;
+import com.dataart.javaSEBasic.parsers.EmailParser;
+import com.dataart.javaSEBasic.parsers.PhoneParser;
+import com.dataart.javaSEBasic.zip.ZipPacker;
+import com.dataart.javaSEBasic.zip.ZipUnpacker;
 
 public class App {
 	
@@ -55,7 +56,7 @@ public class App {
 			String targetTextFilePath = tempFolderString + File.separator + targetFileName;
 
 			// Unarchive recursively. Collect text files
-			UnzipUtility unzipper = new UnzipUtility();
+			ZipUnpacker unzipper = new ZipUnpacker();
 			unzipper.unzip(inputFilePath, tempFolderString, "zip", true);
 
 			// Log all the text files found in the end

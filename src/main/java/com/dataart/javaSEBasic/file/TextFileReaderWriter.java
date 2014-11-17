@@ -1,4 +1,4 @@
-package com.dataart.javaSEBasic;
+package com.dataart.javaSEBasic.file;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,18 +17,13 @@ public class TextFileReaderWriter {
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 
 	// For smaller files
-
-	/**
-	 * Note: the javadoc of Files.readAllLines says it's intended for small
-	 * files. But its implementation uses buffering, so it's likely good even
-	 * for fairly large files.
-	 */
+	
 	List<String> readSmallTextFile(String aFileName) throws IOException {
 		Path path = Paths.get(aFileName);
 		return Files.readAllLines(path, ENCODING);
 	}
 
-	void writeSmallTextFile(List<String> aLines, String aFileName)
+	public void writeSmallTextFile(List<String> aLines, String aFileName)
 			throws IOException {
 		Path path = Paths.get(aFileName);
 		Files.write(path, aLines, ENCODING);
@@ -36,7 +31,7 @@ public class TextFileReaderWriter {
 
 	// For larger files
 
-	void readLargerTextFile(String aFileName, List<String> linesAllFiles) throws IOException {
+	public void readLargerTextFile(String aFileName, List<String> linesAllFiles) throws IOException {
 		Path path = Paths.get(aFileName);
 		Integer lineCounter = 0;
 		try (Scanner scanner = new Scanner(path, ENCODING.name())) {
@@ -53,7 +48,7 @@ public class TextFileReaderWriter {
 		}
 	}
 
-	List<String> readLargerTextFileAlternate(String aFileName)
+	public List<String> readLargerTextFileAlternate(String aFileName)
 			throws IOException {
 		Path path = Paths.get(aFileName);
 		List<String> lines = new ArrayList<String>();
@@ -67,7 +62,7 @@ public class TextFileReaderWriter {
 		return lines;
 	}
 
-	void writeLargerTextFile(String aFileName, List<String> aLines)
+	public void writeLargerTextFile(String aFileName, List<String> aLines)
 			throws IOException {
 		Path path = Paths.get(aFileName);
 		try (BufferedWriter writer = Files.newBufferedWriter(path, ENCODING)) {

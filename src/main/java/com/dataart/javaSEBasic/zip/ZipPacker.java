@@ -1,4 +1,4 @@
-package com.dataart.javaSEBasic;
+package com.dataart.javaSEBasic.zip;
 
 import java.io.*;
 import java.util.zip.*;

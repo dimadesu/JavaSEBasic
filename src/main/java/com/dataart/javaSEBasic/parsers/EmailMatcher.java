@@ -1,9 +1,9 @@
-package com.dataart.javaSEBasic;
+package com.dataart.javaSEBasic.parsers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
  
-public class EmailValidator {
+public class EmailMatcher {
  
 	private Pattern pattern;
 	private Matcher matcher;
@@ -11,11 +11,11 @@ public class EmailValidator {
 	private static final String EMAIL_PATTERN = "[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*.org";
  
-	public EmailValidator() {
+	public EmailMatcher() {
 		pattern = Pattern.compile(EMAIL_PATTERN);
 	}
 	
-	public Matcher validate(String hex) {
+	public Matcher find(String hex) {
  
 		matcher = pattern.matcher(hex);
 		return matcher;

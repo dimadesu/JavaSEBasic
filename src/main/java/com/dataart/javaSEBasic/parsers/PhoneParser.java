@@ -1,8 +1,10 @@
-package com.dataart.javaSEBasic;
+package com.dataart.javaSEBasic.parsers;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.dataart.javaSEBasic.file.TextFileReaderWriter;
 
 public class PhoneParser {
 	
