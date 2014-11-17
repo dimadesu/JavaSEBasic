@@ -3,7 +3,7 @@ JavaSEBasic Usage Instructions
 
 #Prerequisites
 
-To build project Java SE 8 JDK and Maven are required and their `bin` folders should be added to the system environment variables to allow executing commands from the command prompt.
+To build project Java SE 8 JDK and Maven are required and their `bin` folders should be added to the system environment variable `PATH` to allow executing commands from the command prompt.
 
 #Build
 
@@ -15,7 +15,7 @@ Copy `inputs.zip` into folder with jar on one level with jar.
 
 #Run
 
-To execute the jar run the following from the command prompt `java -jar javaSEBasic-0.0.1.jar` or create `run.bat` file, put the command inside it and run .bat file by double clicking it in System Explorer.
+To execute the jar from the command prompt navigate to folder with jar and run the following  `java -jar javaSEBasic-0.0.1.jar`. Another way to run the program is to use `run.bat` file located in the root of the project. Put it next to the jar and run .bat file by double clicking it in System Explorer.
 
 #Result
 
