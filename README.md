@@ -1,7 +1,7 @@
 JavaSEBasic Usage Instructions
 ===========
 
-Maven should be installed in the system and added to the system environment variables to allow executing its commands from command propmpt. Project can be built by executing `mvn clean compile package` in the system command prompt from the project root directory. Executing this should compile sources and create the jar file `javaSEBasic-0.0.1.jar`.
+Maven should be installed in the system and added to the system environment variables to allow executing its commands from command prompt. Project can be built by executing `mvn clean compile package` in the system command prompt from the project root directory. Executing this should compile sources and create the jar file `javaSEBasic-0.0.1.jar`.
 
 Copy `inputs.zip` into folder with jar on one level with jar.
 
