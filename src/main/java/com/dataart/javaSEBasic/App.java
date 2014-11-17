@@ -29,7 +29,7 @@ public class App {
 				jarDecodedPath = URLDecoder.decode(jarPath, "UTF-8");
 				File jarFile = new File(jarDecodedPath);
 				jarFolder = jarFile.getParent() + "/";
-				System.out.println(jarFolder);
+				System.out.println("jarFolder: " + jarFolder);
 			} catch (UnsupportedEncodingException e1) {
 				e1.printStackTrace();
 			}
@@ -49,13 +49,10 @@ public class App {
 			System.out.println("Temp folder created: " + tempFolderString);
 			
 			// Target paths for parsed file
-			String targetDirPath = tempFolderString;
 			String targetFileName = "phones.txt_emails.txt";
 			String targetPhonesFileName = "phones.txt";
 			String targetEmailsFileName = "emails.txt";
-			String targetTextFilePath = targetDirPath + targetFileName;
-			String targetPhonesFilePath = targetDirPath + targetPhonesFileName;
-			String targetEmailsFilePath = targetDirPath + targetEmailsFileName;
+			String targetTextFilePath = tempFolderString + File.separator + targetFileName;
 
 			// Unarchive recursively. Collect text files
 			UnzipUtility unzipper = new UnzipUtility();
@@ -70,27 +67,27 @@ public class App {
 			}
 			readerWriter.writeLargerTextFile(targetTextFilePath, lines);
 
+			// Extract not unzipping recursively
+			String folderExtractedTo = unzipper.unzip(inputFilePath, tempFolderString, "zip", false);
+			
 			// Parse
+			String targetPhonesFilePath = folderExtractedTo + File.separator + targetPhonesFileName;
+			String targetEmailsFilePath = folderExtractedTo + File.separator + targetEmailsFileName;
+			
 			PhoneParser phoneParser = new PhoneParser ();
 			phoneParser.parse(lines, targetPhonesFilePath);
 			
 			EmailParser emailParser = new EmailParser ();
 			emailParser.parse(lines, targetEmailsFilePath);
 			
-			// Zip it
-			ZipPacker packer = new ZipPacker(outputFilePath);
-			packer.writeOneItem(targetPhonesFileName, targetPhonesFilePath);
-			packer.writeOneItem(targetEmailsFileName, targetEmailsFilePath);
-			packer.finishPacking();
+			ZipPacker.zipDir(outputFilePath, folderExtractedTo);
 			
-			// Extract not unzipping recursively
-			String folderExtractedTo = unzipper.unzip(inputFilePath, tempFolderString, "zip", false);
-			ZipPacker2.createZipArchive(folderExtractedTo, outputFilePath);
-			
-			Boolean isTempFolderDeleted = tempFolderFile.delete();
-			System.out.println("Temp folder is deleted: " + (isTempFolderDeleted ? "yes" : "no" )); 
+			tempFolderFile.deleteOnExit();
+			System.out.println("Temp folder is requested to be deleted on exit: " + tempFolderString);
 
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
