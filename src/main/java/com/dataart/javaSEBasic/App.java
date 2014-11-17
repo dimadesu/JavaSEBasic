@@ -59,7 +59,7 @@ public class App {
 
 			// Unarchive recursively. Collect text files
 			UnzipUtility unzipper = new UnzipUtility();
-			unzipper.unzip(inputFilePath, tempFolderString, "zip");
+			unzipper.unzip(inputFilePath, tempFolderString, "zip", true);
 
 			// Log all the text files found in the end
 			TextFileReaderWriter readerWriter = new TextFileReaderWriter();
@@ -82,6 +82,10 @@ public class App {
 			packer.writeOneItem(targetPhonesFileName, targetPhonesFilePath);
 			packer.writeOneItem(targetEmailsFileName, targetEmailsFilePath);
 			packer.finishPacking();
+			
+			// Extract not unzipping recursively
+			String folderExtractedTo = unzipper.unzip(inputFilePath, tempFolderString, "zip", false);
+			ZipPacker2.createZipArchive(folderExtractedTo, outputFilePath);
 			
 			Boolean isTempFolderDeleted = tempFolderFile.delete();
 			System.out.println("Temp folder is deleted: " + (isTempFolderDeleted ? "yes" : "no" )); 

@@ -11,22 +11,9 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
  
-/**
- * This utility extracts files and directories of a standard zip file to
- * a destination directory.
- * @author www.codejava.net
- *
- */
 public class UnzipUtility {
 	
-    /**
-     * Extracts a zip file specified by the zipFilePath to a directory specified by
-     * destDirectory (will be created if does not exists)
-     * @param archiveFilePath
-     * @param destDirectory
-     * @throws IOException
-     */
-    public void unzip(String archiveFilePath, String destDirectory, String extension) throws IOException {
+    public String unzip(String archiveFilePath, String destDirectory, String extension, Boolean isUnzipRecursively) throws IOException {
         
         System.out.println(extension + " archive found: " + archiveFilePath);
         
@@ -50,14 +37,14 @@ public class UnzipUtility {
         	ZipInputStream zipIn = new ZipInputStream(new FileInputStream(archiveFilePath));
 	        ZipEntry entry = zipIn.getNextEntry();
         
-	        // iterates over entries in the zip file
+	        // Iterate over entries in the zip file
 	        while (entry != null) {
 	        	String filePath = destDirectory + File.separator + entry.getName();
 	            if (!entry.isDirectory()) {
-	                // if the entry is a file, extracts it
+	                // If the entry is a file, extract it
 	                extractFile(zipIn, filePath);
 	            } else {
-	                // if the entry is a directory, make the directory
+	                // If the entry is a directory, make the directory
 	                File dir = new File(filePath);
 	                dir.mkdir();
 	            }
@@ -66,8 +53,13 @@ public class UnzipUtility {
 	        }
 	        zipIn.close();
 	        
-	        RecursiveFileIterator recurser = new RecursiveFileIterator();
-	        recurser.iterateDirectoryContents(destDir, null);
+	        if(isUnzipRecursively) {
+	        	// Go inside unzipped directory. Log its content. Unzip further
+		        RecursiveFileIterator recurser = new RecursiveFileIterator();
+		        recurser.iterateDirectoryContents(destDir, null, true);
+	        }
+	        
+	        return destDirectory;
         
         } else if (extension.contains("gz")) {
         
@@ -76,23 +68,19 @@ public class UnzipUtility {
         	String ungrzipedFile = destDirectory + File.separator + unzippedName + ".txt";
         	
         	extractFile(zipIn, ungrzipedFile);
+        	
+        	return ungrzipedFile;
         
         }
+    	
+    	return "";
+    	
     }
     
-    /**
-     * Size of the buffer to read/write data
-     */
     private int BUFFER_SIZE = 4096;
     
-    /**
-     * Extracts a zip entry (file entry)
-     * @param zipIn
-     * @param filePath
-     * @throws IOException
-     */
     private void extractFile(InputStream zipIn, String filePath) throws IOException {
-    	System.out.println("Extracted to: " + filePath);
+    	
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
         byte[] bytesIn = new byte[BUFFER_SIZE];
         int read = 0;
@@ -101,6 +89,8 @@ public class UnzipUtility {
         }
         bos.close();
         
+        System.out.println("Extracted to: " + filePath);
+        
         // Add to text files if extracted is not archive
         File extractedFile = new File (filePath);
         RecursiveFileIterator recurser = new RecursiveFileIterator();
@@ -108,5 +98,6 @@ public class UnzipUtility {
         if (!ext.contains("zip") && !ext.contains("gz")) {
         	App.textFileFound(filePath);
         }
+        
     }
 }
