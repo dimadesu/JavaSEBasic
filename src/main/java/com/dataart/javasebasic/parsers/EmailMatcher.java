@@ -1,4 +1,4 @@
-package com.dataart.javaSEBasic.parsers;
+package com.dataart.javasebasic.parsers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,4 +1,4 @@
-package com.dataart.javaSEBasic.file;
+package com.dataart.javasebasic.file;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

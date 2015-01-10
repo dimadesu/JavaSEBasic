@@ -3,15 +3,30 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.dataart</groupId>
-	<artifactId>javaSEBasic</artifactId>
+	<artifactId>javasebasic</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>javaSEBasic</name>
-	<url>http://maven.apache.org</url>
+	<name>javasebasic</name>
+	<url>http://dataart.com</url>
 
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -20,24 +35,24 @@
 					<target>1.8</target>
 					<archive>
 						<manifest>
-							<mainClass>com.dataart.javaSEBasic.App</mainClass>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>com.dataart.javasebasic.App</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
 					<archive>
 						<manifest>
-							<mainClass>com.dataart.javaSEBasic.App</mainClass>
+							<mainClass>com.dataart.javasebasic.App</mainClass>
 						</manifest>
 					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -47,4 +62,26 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.1</version>
+		</dependency>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-bom</artifactId>
+				<version>2.1</version>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

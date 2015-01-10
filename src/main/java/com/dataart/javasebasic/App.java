@@ -1,4 +1,4 @@
-package com.dataart.javaSEBasic;
+package com.dataart.javasebasic;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,17 +10,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.dataart.javaSEBasic.file.TextFileReaderWriter;
-import com.dataart.javaSEBasic.parsers.EmailParser;
-import com.dataart.javaSEBasic.parsers.PhoneParser;
-import com.dataart.javaSEBasic.zip.ZipPacker;
-import com.dataart.javaSEBasic.zip.ZipUnpacker;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+import com.dataart.javasebasic.file.TextFileReaderWriter;
+import com.dataart.javasebasic.parsers.EmailParser;
+import com.dataart.javasebasic.parsers.PhoneParser;
+import com.dataart.javasebasic.zip.ZipPacker;
+import com.dataart.javasebasic.zip.ZipUnpacker;
 
 public class App {
+	
+	private static final Logger logger = LogManager.getLogger("AppLogger");
 	
 	public static void main(String[] args) {
 
 		try {
+			
+			logger.trace("Entering application.");
+			
+			System.out.println("Press Enter key to continue");
+			System.in.read();
+			
 			// Path to the folder jar is executed from
 			String jarPath = App.class.getProtectionDomain().getCodeSource()
 					.getLocation().getPath();
@@ -43,7 +55,7 @@ public class App {
 			
 			// Generate random string to avoid name conflicts
 			UUID uuid = UUID.randomUUID();
-			String tempFolderName = "javaSEBasic_" + uuid.toString();
+			String tempFolderName = "javasebasic_" + uuid.toString();
 			Path tempFolderPath = Files.createTempDirectory(tempFolderName);
 			File tempFolderFile = tempFolderPath.toFile();
 			String tempFolderString = tempFolderPath.toString();
@@ -58,6 +70,10 @@ public class App {
 			// Unarchive recursively. Collect text files
 			ZipUnpacker unzipper = new ZipUnpacker();
 			unzipper.unzip(inputFilePath, tempFolderString, "zip", true);
+			
+			// Pause
+			System.out.println("Press Enter key to continue");
+			System.in.read();
 
 			// Log all the text files found in the end
 			TextFileReaderWriter readerWriter = new TextFileReaderWriter();
@@ -67,6 +83,10 @@ public class App {
 				readerWriter.readLargerTextFile(listItem, lines);
 			}
 			readerWriter.writeLargerTextFile(targetTextFilePath, lines);
+			
+			// Pause
+			System.out.println("Press Enter key to continue");
+			System.in.read();
 
 			// Extract not unzipping recursively
 			String folderExtractedTo = unzipper.unzip(inputFilePath, tempFolderString, "zip", false);
@@ -75,16 +95,18 @@ public class App {
 			String targetPhonesFilePath = folderExtractedTo + File.separator + targetPhonesFileName;
 			String targetEmailsFilePath = folderExtractedTo + File.separator + targetEmailsFileName;
 			
-			PhoneParser phoneParser = new PhoneParser ();
+			PhoneParser phoneParser = new PhoneParser();
 			phoneParser.parse(lines, targetPhonesFilePath);
 			
-			EmailParser emailParser = new EmailParser ();
+			EmailParser emailParser = new EmailParser();
 			emailParser.parse(lines, targetEmailsFilePath);
 			
 			ZipPacker.zipDir(outputFilePath, folderExtractedTo);
 			
 			tempFolderFile.deleteOnExit();
 			System.out.println("Temp folder is requested to be deleted on exit: " + tempFolderString);
+			
+			logger.trace("Exiting application.");
 
 		} catch (IOException e) {
 			e.printStackTrace();

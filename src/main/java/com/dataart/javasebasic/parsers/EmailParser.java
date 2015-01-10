@@ -1,11 +1,11 @@
-package com.dataart.javaSEBasic.parsers;
+package com.dataart.javasebasic.parsers;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import com.dataart.javaSEBasic.file.TextFileReaderWriter;
+import com.dataart.javasebasic.file.TextFileReaderWriter;
 
 public class EmailParser {
 	

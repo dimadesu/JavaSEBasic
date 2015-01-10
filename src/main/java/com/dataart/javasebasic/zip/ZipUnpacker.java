@@ -1,4 +1,4 @@
-package com.dataart.javaSEBasic.zip;
+package com.dataart.javasebasic.zip;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -11,8 +11,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.dataart.javaSEBasic.App;
-import com.dataart.javaSEBasic.file.RecursiveFileIterator;
+import com.dataart.javasebasic.file.RecursiveFileIterator;
+import com.dataart.javasebasic.App;
  
 public class ZipUnpacker {
 	

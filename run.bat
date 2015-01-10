@@ -1,1 +1,2 @@
-java -jar javaSEBasic-0.0.1.jar
+java -jar javasebasic-0.0.1-jar-with-dependencies.jar
+pause

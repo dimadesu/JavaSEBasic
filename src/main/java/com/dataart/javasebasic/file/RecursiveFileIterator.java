@@ -1,10 +1,10 @@
-package com.dataart.javaSEBasic.file;
+package com.dataart.javasebasic.file;
 
 import java.io.File;
 import java.io.IOException;
 
-import com.dataart.javaSEBasic.App;
-import com.dataart.javaSEBasic.zip.ZipUnpacker;
+import com.dataart.javasebasic.zip.ZipUnpacker;
+import com.dataart.javasebasic.App;
 
 public class RecursiveFileIterator {
 	
