@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dataart.javasebasic.App;
 import com.dataart.javasebasic.file.TextFileReaderWriter;
 
 public class PhoneParser {
@@ -83,11 +84,11 @@ public class PhoneParser {
 
 		// Sort
 		java.util.Collections.sort(phonesReplaced);
-		System.out.println("Phones collected:");
+		App.logger.info("Phones collected:");
 
 		// Log results to console
 		for (String phone : phonesReplaced) {
-			System.out.println(phone);
+			App.logger.info(phone);
 		}
 
 		// Save results to a file

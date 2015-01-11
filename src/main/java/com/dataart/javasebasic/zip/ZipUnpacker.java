@@ -18,7 +18,7 @@ public class ZipUnpacker {
 	
     public String unzip(String archiveFilePath, String destDirectory, String extension, Boolean isUnzipRecursively) throws IOException {
         
-        System.out.println(extension + " archive found: " + archiveFilePath);
+        App.logger.debug(extension + " archive found: " + archiveFilePath);
         
         File archiveFile = new File(archiveFilePath);
         
@@ -35,7 +35,7 @@ public class ZipUnpacker {
             	destDir.mkdir();            	
             }
             
-            System.out.println("Unzipping into directory: " + destDir);
+            App.logger.debug("Unzipping into directory: " + destDir);
         	
         	ZipInputStream zipIn = new ZipInputStream(new FileInputStream(archiveFilePath));
 	        ZipEntry entry = zipIn.getNextEntry();
@@ -92,7 +92,7 @@ public class ZipUnpacker {
         }
         bos.close();
         
-        System.out.println("Extracted to: " + filePath);
+        App.logger.debug("Extracted to: " + filePath);
         
         // Add to text files if extracted is not archive
         File extractedFile = new File (filePath);

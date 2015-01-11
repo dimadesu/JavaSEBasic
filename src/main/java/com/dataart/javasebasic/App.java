@@ -22,16 +22,13 @@ import com.dataart.javasebasic.zip.ZipUnpacker;
 
 public class App {
 	
-	private static final Logger logger = LogManager.getLogger("AppLogger");
+	public static final Logger logger = LogManager.getLogger("AppLogger");
 	
 	public static void main(String[] args) {
 
 		try {
 			
-			logger.trace("Entering application.");
-			
-			System.out.println("Press Enter key to continue");
-			System.in.read();
+			App.logger.info("Entering application.");
 			
 			// Path to the folder jar is executed from
 			String jarPath = App.class.getProtectionDomain().getCodeSource()
@@ -42,7 +39,7 @@ public class App {
 				jarDecodedPath = URLDecoder.decode(jarPath, "UTF-8");
 				File jarFile = new File(jarDecodedPath);
 				jarFolder = jarFile.getParent() + "/";
-				System.out.println("jarFolder: " + jarFolder);
+				App.logger.debug("jarFolder: " + jarFolder);
 			} catch (UnsupportedEncodingException e1) {
 				e1.printStackTrace();
 			}
@@ -59,7 +56,7 @@ public class App {
 			Path tempFolderPath = Files.createTempDirectory(tempFolderName);
 			File tempFolderFile = tempFolderPath.toFile();
 			String tempFolderString = tempFolderPath.toString();
-			System.out.println("Temp folder created: " + tempFolderString);
+			App.logger.debug("Temp folder created: " + tempFolderString);
 			
 			// Target paths for parsed file
 			String targetFileName = "phones.txt_emails.txt";
@@ -67,26 +64,21 @@ public class App {
 			String targetEmailsFileName = "emails.txt";
 			String targetTextFilePath = tempFolderString + File.separator + targetFileName;
 
+			App.logger.info("About to start unarchiving and collecting text files");
+			
 			// Unarchive recursively. Collect text files
 			ZipUnpacker unzipper = new ZipUnpacker();
 			unzipper.unzip(inputFilePath, tempFolderString, "zip", true);
-			
-			// Pause
-			System.out.println("Press Enter key to continue");
-			System.in.read();
 
 			// Log all the text files found in the end
 			TextFileReaderWriter readerWriter = new TextFileReaderWriter();
 			List<String> lines = new ArrayList<String>();
 			for (String listItem : App.textFiles) {
-				System.out.println(listItem);
+				App.logger.debug(listItem);
 				readerWriter.readLargerTextFile(listItem, lines);
 			}
+			App.logger.debug("Writing collected lines into a file.");
 			readerWriter.writeLargerTextFile(targetTextFilePath, lines);
-			
-			// Pause
-			System.out.println("Press Enter key to continue");
-			System.in.read();
 
 			// Extract not unzipping recursively
 			String folderExtractedTo = unzipper.unzip(inputFilePath, tempFolderString, "zip", false);
@@ -104,14 +96,17 @@ public class App {
 			ZipPacker.zipDir(outputFilePath, folderExtractedTo);
 			
 			tempFolderFile.deleteOnExit();
-			System.out.println("Temp folder is requested to be deleted on exit: " + tempFolderString);
+			App.logger.debug("Temp folder is requested to be deleted on exit: " + tempFolderString);
 			
-			logger.trace("Exiting application.");
+			App.logger.info("Program ran successfully.");
+			App.logger.info("Exiting application.");
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			App.logger.fatal("IOException. Exiting application.", e);
+			App.pause();
 		} catch (Exception e) {
-			e.printStackTrace();
+			App.logger.fatal("Unknown exception. Exiting application.", e);
+			App.pause();
 		}
 
 	}
@@ -122,8 +117,18 @@ public class App {
 	public static void textFileFound(String path) {
 		App.textFilesCounter++;
 		App.textFiles.add(path);
-		System.out.println("Text file found. Total text files so far: "
+		App.logger.info("Text file found. Total text files so far: "
 				+ textFilesCounter);
+	}
+	
+	public static void pause () {
+		// Pause
+		App.logger.info("Press Enter key to proceed");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			App.logger.error("IOException.", e);
+		}
 	}
 
 }

@@ -15,12 +15,12 @@ public class RecursiveFileIterator {
 				
 				if (file.isDirectory()) {
 					
-					System.out.println("Directory: " + file.getName());
+					App.logger.debug("Directory: " + file.getName());
 					iterateDirectoryContents(file, null, isUnzip);
 					
 				} else {
 					
-					System.out.println("File: " + file.getCanonicalPath());
+					App.logger.debug("File: " + file.getCanonicalPath());
 					
 					if (isUnzip) {
 

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.dataart.javasebasic.App;
+
 public class TextFileReaderWriter {
 
 	final static Charset ENCODING = StandardCharsets.UTF_8;
@@ -34,16 +36,15 @@ public class TextFileReaderWriter {
 	public void readLargerTextFile(String aFileName, List<String> linesAllFiles) throws IOException {
 		Path path = Paths.get(aFileName);
 		Integer lineCounter = 0;
+		App.logger.debug("Reading file: " + path);
 		try (Scanner scanner = new Scanner(path, ENCODING.name())) {
 			while (scanner.hasNextLine()) {
 				// process each line in some way
 				String line = scanner.nextLine();
 				if (!linesAllFiles.contains(line) && !line.isEmpty()) {
 					linesAllFiles.add(line);
-					System.out.println("Added line:" + line);
 				}
 				lineCounter++;
-				System.out.println("Processed line #" + lineCounter);
 			}
 		}
 	}
@@ -65,16 +66,13 @@ public class TextFileReaderWriter {
 	public void writeLargerTextFile(String aFileName, List<String> aLines)
 			throws IOException {
 		Path path = Paths.get(aFileName);
+		App.logger.debug("Writing file: " + path);
 		try (BufferedWriter writer = Files.newBufferedWriter(path, ENCODING)) {
 			for (String line : aLines) {
 				writer.write(line);
 				writer.newLine();
 			}
 		}
-	}
-
-	public static void log(Object aMsg) {
-		System.out.println(String.valueOf(aMsg));
 	}
 
 }

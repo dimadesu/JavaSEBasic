@@ -3,6 +3,8 @@ package com.dataart.javasebasic.zip;
 import java.io.*;
 import java.util.zip.*;
 
+import com.dataart.javasebasic.App;
+
 public class ZipPacker {
 
 	private static String zipBaseFolder = null; 
@@ -10,7 +12,7 @@ public class ZipPacker {
 	public static void zipDir(String zipFileName, String dir) throws Exception {
 		File dirObj = new File(dir);
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
-		System.out.println("Packing : " + zipFileName);
+		App.logger.debug("Packing : " + zipFileName);
 		zipBaseFolder = dir;
 		addDir(dirObj, out);
 		out.close();
@@ -37,7 +39,7 @@ public class ZipPacker {
 			}
 			out.closeEntry();
 			in.close();
-			System.out.println(" Packed: " + path);
+			App.logger.debug(" Packed: " + path);
 		}
 	}
 }

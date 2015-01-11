@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.dataart.javasebasic.App;
 import com.dataart.javasebasic.file.TextFileReaderWriter;
 
 public class EmailParser {
@@ -26,9 +27,9 @@ public class EmailParser {
 		java.util.Collections.sort(emails);
 
 		// Log
-		System.out.println("Emails collected:");
+		App.logger.info("Emails collected:");
 		for (String email : emails) {
-			System.out.println(email);
+			App.logger.info(email);
 		}
 
 		// Write to file

@@ -7,7 +7,7 @@ To build the project Java SE 8 JDK and Maven are required and their `bin` folder
 
 #Build
 
-Project can be built by executing `mvn clean install compile assembly:assembly` in the system command prompt from the project root directory. Executing this should compile sources and create the jar file `javaSEBasic-0.0.1.jar`.
+Project can be built by executing `mvn clean compile assembly:assembly` in the system command prompt from the project root directory. Executing this should compile sources and create the jar file `javaSEBasic-0.0.1.jar`.
 
 #Input
 
