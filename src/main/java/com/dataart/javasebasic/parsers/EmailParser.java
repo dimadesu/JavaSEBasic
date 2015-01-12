@@ -2,6 +2,7 @@ package com.dataart.javasebasic.parsers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -24,7 +25,7 @@ public class EmailParser {
 		}
 
 		// Sort
-		java.util.Collections.sort(emails);
+		Collections.sort(emails);
 
 		// Log
 		App.logger.info("Emails collected:");

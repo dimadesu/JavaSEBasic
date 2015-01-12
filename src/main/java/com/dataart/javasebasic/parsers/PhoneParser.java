@@ -2,6 +2,7 @@ package com.dataart.javasebasic.parsers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.dataart.javasebasic.App;
@@ -83,7 +84,7 @@ public class PhoneParser {
 		}
 
 		// Sort
-		java.util.Collections.sort(phonesReplaced);
+		Collections.sort(phonesReplaced);
 		App.logger.info("Phones collected:");
 
 		// Log results to console
