@@ -40,7 +40,7 @@ public class RecursiveFileIterator {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			App.logger.error("IOException. Could not get file canonical path", e);
 		}
 	}
 	

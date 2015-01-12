@@ -155,7 +155,7 @@ public class App {
 		try {
 			System.in.read();
 		} catch (IOException e) {
-			App.logger.error("IOException.", e);
+			App.logger.error("IOException. Problem reading user input.", e);
 		}
 	}
 

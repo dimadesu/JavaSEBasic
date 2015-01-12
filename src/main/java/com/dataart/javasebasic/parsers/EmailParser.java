@@ -35,11 +35,7 @@ public class EmailParser {
 
 		// Write to file
 		TextFileReaderWriter readerWriter = new TextFileReaderWriter();
-		try {
-			readerWriter.writeLargerTextFile(targetEmailsFilePath, emails);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		readerWriter.writeLargerTextFile(targetEmailsFilePath, emails);
 	}
 
 }

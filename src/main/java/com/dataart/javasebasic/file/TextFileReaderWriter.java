@@ -33,7 +33,7 @@ public class TextFileReaderWriter {
 
 	// For larger files
 
-	public void readLargerTextFile(String aFileName, List<String> linesAllFiles) throws IOException {
+	public void readLargerTextFile(String aFileName, List<String> linesAllFiles) {
 		Path path = Paths.get(aFileName);
 		Integer lineCounter = 0;
 		App.logger.debug("Reading file: " + path);
@@ -46,6 +46,8 @@ public class TextFileReaderWriter {
 				}
 				lineCounter++;
 			}
+		} catch (IOException e) {
+			App.logger.error("Could not read text file.", e);
 		}
 	}
 
@@ -63,8 +65,7 @@ public class TextFileReaderWriter {
 		return lines;
 	}
 
-	public void writeLargerTextFile(String aFileName, List<String> aLines)
-			throws IOException {
+	public void writeLargerTextFile(String aFileName, List<String> aLines) {
 		Path path = Paths.get(aFileName);
 		App.logger.debug("Writing file: " + path);
 		try (BufferedWriter writer = Files.newBufferedWriter(path, ENCODING)) {
@@ -72,6 +73,8 @@ public class TextFileReaderWriter {
 				writer.write(line);
 				writer.newLine();
 			}
+		} catch (IOException e) {
+			App.logger.error("Could not write file.", e);
 		}
 	}
 

@@ -94,12 +94,7 @@ public class PhoneParser {
 
 		// Save results to a file
 		TextFileReaderWriter readerWriter = new TextFileReaderWriter();
-		try {
-			readerWriter.writeLargerTextFile(targetPhonesFilePath,
-					phonesReplaced);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		readerWriter.writeLargerTextFile(targetPhonesFilePath, phonesReplaced);
 
 	}
 
