@@ -3,6 +3,7 @@ package com.dataart.javasebasic.zip;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +17,9 @@ import com.dataart.javasebasic.App;
  
 public class ZipUnpacker {
 	
-    public String unzip(String archiveFilePath, String destDirectory, String extension, Boolean isUnzipRecursively) throws IOException {
+    public String unzip(String archiveFilePath, String destDirectory, String extension, Boolean isUnzipRecursively) {
         
-        App.logger.debug(extension + " archive found: " + archiveFilePath);
+        App.logger.debug(extension + " archive path requested for unzipping: " + archiveFilePath);
         
         File archiveFile = new File(archiveFilePath);
         
@@ -26,55 +27,69 @@ public class ZipUnpacker {
         UUID uuid = UUID.randomUUID();
         
         String unzippedName = archiveFile.getName() + "_" + uuid.toString();
+        
+        try {
     	
-    	if(extension.contains("zip")) {
-        	
-    		destDirectory = destDirectory + File.separator + unzippedName;
-        	File destDir = new File(destDirectory);
-            if(!destDir.exists()) {
-            	destDir.mkdir();            	
-            }
-            
-            App.logger.debug("Unzipping into directory: " + destDir);
-        	
-        	ZipInputStream zipIn = new ZipInputStream(new FileInputStream(archiveFilePath));
-	        ZipEntry entry = zipIn.getNextEntry();
-        
-	        // Iterate over entries in the zip file
-	        while (entry != null) {
-	        	String filePath = destDirectory + File.separator + entry.getName();
-	            if (!entry.isDirectory()) {
-	                // If the entry is a file, extract it
-	                extractFile(zipIn, filePath);
-	            } else {
-	                // If the entry is a directory, make the directory
-	                File dir = new File(filePath);
-	                dir.mkdir();
+	    	if(extension.contains("zip")) {
+	        	
+	    		destDirectory = destDirectory + File.separator + unzippedName;
+	        	File destDir = new File(destDirectory);
+	            if(!destDir.exists()) {
+	            	destDir.mkdir();            	
 	            }
-	            zipIn.closeEntry();
-	            entry = zipIn.getNextEntry();
-	        }
-	        zipIn.close();
+	            
+	            App.logger.debug("Unzipping into directory: " + destDir);
+	        	
+	        	ZipInputStream zipIn = null;
+				try {
+					zipIn = new ZipInputStream(new FileInputStream(archiveFilePath));
+				} catch (FileNotFoundException e) {
+					App.logger.error("Archive not found", e);
+					return (App.ARCHIVE_NOT_FOUND);
+				}
+		        ZipEntry entry = zipIn.getNextEntry();
 	        
-	        if(isUnzipRecursively) {
-	        	// Go inside unzipped directory. Log its content. Unzip further
-		        RecursiveFileIterator recurser = new RecursiveFileIterator();
-		        recurser.iterateDirectoryContents(destDir, null, true);
-	        }
+		        // Iterate over entries in the zip file
+		        while (entry != null) {
+		        	String filePath = destDirectory + File.separator + entry.getName();
+		            if (!entry.isDirectory()) {
+		                // If the entry is a file, extract it
+		                extractFile(zipIn, filePath);
+		            } else {
+		                // If the entry is a directory, make the directory
+		                File dir = new File(filePath);
+		                dir.mkdir();
+		            }
+		            zipIn.closeEntry();
+		            entry = zipIn.getNextEntry();
+		        }
+		        zipIn.close();
+		        
+		        if(isUnzipRecursively) {
+		        	// Go inside unzipped directory. Log its content. Unzip further
+			        RecursiveFileIterator recurser = new RecursiveFileIterator();
+			        recurser.iterateDirectoryContents(destDir, null, true);
+		        }
+		        
+		        return destDirectory;
 	        
-	        return destDirectory;
-        
-        } else if (extension.contains("gz")) {
-        
-        	GZIPInputStream zipIn = new GZIPInputStream(new FileInputStream(archiveFilePath));
-        	
-        	String ungrzipedFile = destDirectory + File.separator + unzippedName + ".txt";
-        	
-        	extractFile(zipIn, ungrzipedFile);
-        	
-        	return ungrzipedFile;
-        
-        }
+	        } else if (extension.contains("gz")) {
+	        
+	        	GZIPInputStream zipIn = new GZIPInputStream(new FileInputStream(archiveFilePath));
+	        	
+	        	String ungrzipedFile = destDirectory + File.separator + unzippedName + ".txt";
+	        	
+	        	extractFile(zipIn, ungrzipedFile);
+	        	
+	        	return ungrzipedFile;
+	        
+	        }
+    	
+		} catch (IOException e) {
+			
+			App.logger.error("IOException", e);
+			
+		}
     	
     	return "";
     	

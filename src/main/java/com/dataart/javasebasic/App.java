@@ -1,7 +1,9 @@
 package com.dataart.javasebasic;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
@@ -29,6 +31,8 @@ public class App {
 			
 			App.logger.info("Entering application.");
 			
+			String inputFolder = null;
+			
 			// Path to the folder jar is executed from
 			String jarPath = App.class.getProtectionDomain().getCodeSource()
 					.getLocation().getPath();
@@ -40,13 +44,19 @@ public class App {
 				jarFolder = jarFile.getParent() + "/";
 				App.logger.debug("jarFolder: " + jarFolder);
 			} catch (UnsupportedEncodingException e1) {
-				e1.printStackTrace();
+				App.logger.error("UnsupportedEncodingException", e1);
+			}
+			
+			// If path was not supplied via program argument, then search for zip inside the folder jar is executed from
+			if(args.length == 0) {
+				inputFolder = jarFolder;
+			} else {
+				inputFolder = args[0] + "/";
 			}
 			
 			// Input. Output
 			String inputFileName = "inputs.zip";
 			String outputFileName = "inputsv2.zip";
-			String inputFilePath = jarFolder + inputFileName;
 			String outputFilePath = jarFolder + outputFileName;
 			
 			// Generate random string to avoid name conflicts
@@ -67,7 +77,24 @@ public class App {
 			
 			// Unarchive recursively. Collect text files
 			ZipUnpacker unzipper = new ZipUnpacker();
-			unzipper.unzip(inputFilePath, tempFolderString, "zip", true);
+			
+			String inputFilePath;
+			String recusiveUnzip;
+
+			do {
+				
+				inputFilePath = inputFolder + inputFileName;
+				recusiveUnzip = unzipper.unzip(inputFilePath, tempFolderString, "zip", true);
+
+				if(recusiveUnzip == App.ARCHIVE_NOT_FOUND) {
+				
+					App.logger.info("Please enter path to the folder constaining inputs.zip");
+					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+					inputFolder = br.readLine() +  "/";
+				
+				}
+					
+			} while (recusiveUnzip == App.ARCHIVE_NOT_FOUND);
 
 			// Log all the text files found in the end
 			TextFileReaderWriter readerWriter = new TextFileReaderWriter();
@@ -110,6 +137,8 @@ public class App {
 
 	}
 
+	public static final String ARCHIVE_NOT_FOUND = "archive_not_found";
+	
 	public static int textFilesCounter = 0;
 	public static List<String> textFiles = new ArrayList<String>();
 
