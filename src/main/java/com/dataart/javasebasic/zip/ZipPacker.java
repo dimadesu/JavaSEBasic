@@ -28,7 +28,7 @@ public class ZipPacker {
 			} else {
 				App.logger.error(" Zip archive invalid.");
 			}
-			App.deleteAnything(folderToZipFile);
+			deleteAnything(folderToZipFile);
 		
 		} catch (IOException e) {
 			App.logger.error("IOException", e);
@@ -104,6 +104,11 @@ public class ZipPacker {
 					continue;
 				}
 				
+				if(fileItem.getName().contains(".gz" + App.ARCHIVE_INDICATOR)) {
+					deleteAnything(fileItem);
+					continue;
+				}
+				
 				FileInputStream in = new FileInputStream(fileItem);
 				
 				App.logger.trace(" Relative file name: " + relative);
@@ -125,6 +130,38 @@ public class ZipPacker {
 			}
 		}
 		
+	}
+	
+	public static boolean deleteAnything(File deleteFile) {
+		Boolean isFolderDeleted = false;
+		if(deleteFile.exists()){
+			if(deleteFile.isDirectory()) {
+				File[] files = deleteFile.listFiles();
+		        if(null!=files){
+		            for(int i=0; i<files.length; i++) {
+		            	deleteAnything(files[i]);
+		            }
+		        }
+		        App.logger.trace("Deleting folder: " + deleteFile);
+			    isFolderDeleted = deleteFile.delete();
+			    if(isFolderDeleted) {
+			    	App.logger.trace("Delete success.");
+			    } else {
+			    	App.logger.error("Delete failed.");
+			    	deleteAnything(deleteFile);
+			    }
+			} else {
+				App.logger.trace("Deleting file: " + deleteFile);
+                Boolean isFileDeleted = deleteFile.delete();
+                if(isFileDeleted) {
+        	    	App.logger.trace("Delete success.");
+        	    } else {
+        	    	App.logger.error("Delete failed.");
+        	    	deleteAnything(deleteFile);
+        	    }
+			}
+	    }
+	    return isFolderDeleted;
 	}
 	
 	static boolean isZipValid(final File file) {

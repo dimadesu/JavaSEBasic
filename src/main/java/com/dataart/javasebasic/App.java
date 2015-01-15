@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import com.dataart.javasebasic.file.RecursiveFileIterator;
 import com.dataart.javasebasic.file.TextFileReaderWriter;
 import com.dataart.javasebasic.parsers.EmailParser;
 import com.dataart.javasebasic.parsers.PhoneParser;
@@ -78,14 +79,14 @@ public class App {
 			ZipUnpacker unzipper = new ZipUnpacker();
 			
 			String inputFilePath;
-			String recusiveUnzip;
+			String recusiveUnzipResult;
 
 			do {
 				
 				inputFilePath = inputFolder + inputFileName;
-				recusiveUnzip = unzipper.unzip(inputFilePath, tempFolderName, "zip", true);
+				recusiveUnzipResult = unzipper.unzip(inputFilePath, jarFolder, "zip", true);
 
-				if(recusiveUnzip == App.ARCHIVE_NOT_FOUND) {
+				if(recusiveUnzipResult == App.ARCHIVE_NOT_FOUND) {
 				
 					App.logger.info("Please enter path to the folder constaining inputs.zip");
 					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -93,10 +94,15 @@ public class App {
 				
 				}
 					
-			} while (recusiveUnzip == App.ARCHIVE_NOT_FOUND);
+			} while (recusiveUnzipResult == App.ARCHIVE_NOT_FOUND);
 
-			// Log all the text files found in the end
 			TextFileReaderWriter readerWriter = new TextFileReaderWriter();
+			
+			// Replace phone codes
+	        RecursiveFileIterator recurser = new RecursiveFileIterator();
+	        recurser.iterateDirectoryContents(new File(recusiveUnzipResult), null, false);
+			
+			// Log all the text files found
 			List<String> lines = new ArrayList<String>();
 			for (String listItem : App.textFiles) {
 				App.logger.debug(listItem);
@@ -156,38 +162,6 @@ public class App {
 		} catch (IOException e) {
 			App.logger.error("IOException. Problem reading user input.", e);
 		}
-	}
-	
-	public static boolean deleteAnything(File deleteFile) {
-		Boolean isFolderDeleted = false;
-		if(deleteFile.exists()){
-			if(deleteFile.isDirectory()) {
-				File[] files = deleteFile.listFiles();
-		        if(null!=files){
-		            for(int i=0; i<files.length; i++) {
-		            	deleteAnything(files[i]);
-		            }
-		        }
-		        App.logger.trace("Deleting folder: " + deleteFile);
-			    isFolderDeleted = deleteFile.delete();
-			    if(isFolderDeleted) {
-			    	App.logger.trace("Delete success.");
-			    } else {
-			    	App.logger.error("Delete failed.");
-			    	deleteAnything(deleteFile);
-			    }
-			} else {
-				App.logger.trace("Deleting file: " + deleteFile);
-                Boolean isFileDeleted = deleteFile.delete();
-                if(isFileDeleted) {
-        	    	App.logger.trace("Delete success.");
-        	    } else {
-        	    	App.logger.error("Delete failed.");
-        	    	deleteAnything(deleteFile);
-        	    }
-			}
-	    }
-	    return isFolderDeleted;
 	}
 
 }

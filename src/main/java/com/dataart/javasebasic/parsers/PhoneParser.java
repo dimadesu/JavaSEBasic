@@ -61,21 +61,6 @@ public class PhoneParser {
 				continue;
 			}
 
-			String code = phone.substring(1, 4);
-			String replacement = null;
-
-			if (code.equals("101")) {
-				replacement = "401";
-			} else if (code.equals("202")) {
-				replacement = "802";
-			} else if (code.equals("301")) {
-				replacement = "321";
-			}
-
-			if (replacement != null) {
-				phone = phone.charAt(0) + replacement + phone.substring(4);
-			}
-
 			// Change phone to format in the task
 			phone = "+" + phone.charAt(0) + " (" + phone.substring(1, 5) + ") "
 					+ phone.substring(6);

@@ -1,8 +1,14 @@
 package com.dataart.javasebasic.file;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.dataart.javasebasic.zip.ZipPacker;
 import com.dataart.javasebasic.zip.ZipUnpacker;
 import com.dataart.javasebasic.App;
 
@@ -35,6 +41,45 @@ public class RecursiveFileIterator {
 							App.textFileFound(file.getCanonicalPath());
 						}
 
+					} else if(getExtension(file).contains("txt")) {
+						
+						// Replace phone codes
+						// Read file contents. Write into copy. Delete original. Rename copy to original
+						
+						String COPY_INDICATOR = "_copy";
+						
+						File fileCopy = new File(file + COPY_INDICATOR);
+						
+						try
+				        {
+							BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+		            		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileCopy));				
+			            	byte[] buffer = new byte[512 * 8];
+			            	int readLength;
+		                    while ((readLength = bis.read(buffer)) != -1) {
+		                    	App.logger.trace(" buffer: " + buffer);
+		                    	String chunk = new String(buffer)
+					                    .replace("(101)", "(401)")
+					                    .replace("(202)", "(802)")
+					                    .replace("(301)", "(321)");
+		                    	bos.write(chunk.getBytes(), 0, readLength);
+		                    }
+		                    bos.close();
+				            bis.close();
+				        }
+				        catch(FileNotFoundException e)
+				        {
+				        	App.logger.error("File was not found!", e);
+				        }
+				        catch(IOException e)    
+				        {
+				        	App.logger.error("No file found!", e);
+				        }
+						
+						ZipPacker.deleteAnything(file);
+						
+						fileCopy.renameTo(file);
+						
 					}
 					
 				}
