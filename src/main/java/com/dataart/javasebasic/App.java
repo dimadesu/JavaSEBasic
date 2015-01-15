@@ -62,9 +62,11 @@ public class App {
 			File outputFile = new File (jarFolder + App.outputFileName + App.ARCHIVE_INDICATOR);
 			String tempFolderName = jarFolder + App.inputFileName + App.ARCHIVE_INDICATOR;
 			File tempFolderFile = new File(tempFolderName);
-			if(!tempFolderFile.exists()) {
-				tempFolderFile.mkdir();
+			// If it there is a leftover folder from last time delete it
+			if(tempFolderFile.exists()) {
+				ZipPacker.deleteAnything(tempFolderFile);
 			}
+			tempFolderFile.mkdir();
 			App.logger.debug("Temp folder created: " + tempFolderName);
 			
 			// Target paths for parsed file
