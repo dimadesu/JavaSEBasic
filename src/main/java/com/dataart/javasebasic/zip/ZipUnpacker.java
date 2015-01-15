@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -23,10 +22,7 @@ public class ZipUnpacker {
         
         File archiveFile = new File(archiveFilePath);
         
-        // Generate random string to avoid name conflicts
-        UUID uuid = UUID.randomUUID();
-        
-        String unzippedName = archiveFile.getName() + "_" + uuid.toString();
+        String unzippedName = archiveFile.getName() + App.ARCHIVE_INDICATOR;
         
         try {
     	

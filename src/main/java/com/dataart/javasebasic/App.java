@@ -6,11 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +22,11 @@ public class App {
 	
 	public static final Logger logger = LogManager.getLogger("AppLogger");
 	
+	public static final String inputFileName = "inputs.zip";
+	public static final String outputFileName = "inputsv2.zip";
+	public static final String ARCHIVE_INDICATOR = "_extracted";
+	public static final String ARCHIVE_NOT_FOUND = "archive_not_found";
+	
 	public static void main(String[] args) {
 
 		try {
@@ -32,6 +34,7 @@ public class App {
 			App.logger.info("Entering application.");
 			
 			String inputFolder = null;
+			File jarFile = null;
 			
 			// Path to the folder jar is executed from
 			String jarPath = App.class.getProtectionDomain().getCodeSource()
@@ -40,7 +43,7 @@ public class App {
 			String jarFolder = null;
 			try {
 				jarDecodedPath = URLDecoder.decode(jarPath, "UTF-8");
-				File jarFile = new File(jarDecodedPath);
+				jarFile = new File(jarDecodedPath);
 				jarFolder = jarFile.getParent() + "/";
 				App.logger.debug("jarFolder: " + jarFolder);
 			} catch (UnsupportedEncodingException e1) {
@@ -55,23 +58,19 @@ public class App {
 			}
 			
 			// Input. Output
-			String inputFileName = "inputs.zip";
-			String outputFileName = "inputsv2.zip";
-			String outputFilePath = jarFolder + outputFileName;
-			
-			// Generate random string to avoid name conflicts
-			UUID uuid = UUID.randomUUID();
-			String tempFolderName = "javasebasic_" + uuid.toString();
-			Path tempFolderPath = Files.createTempDirectory(tempFolderName);
-			File tempFolderFile = tempFolderPath.toFile();
-			String tempFolderString = tempFolderPath.toString();
-			App.logger.debug("Temp folder created: " + tempFolderString);
+			File outputFile = new File (jarFolder + App.outputFileName + App.ARCHIVE_INDICATOR);
+			String tempFolderName = jarFolder + App.inputFileName + App.ARCHIVE_INDICATOR;
+			File tempFolderFile = new File(tempFolderName);
+			if(!tempFolderFile.exists()) {
+				tempFolderFile.mkdir();
+			}
+			App.logger.debug("Temp folder created: " + tempFolderName);
 			
 			// Target paths for parsed file
 			String targetFileName = "phones.txt_emails.txt";
 			String targetPhonesFileName = "phones.txt";
 			String targetEmailsFileName = "emails.txt";
-			String targetTextFilePath = tempFolderString + File.separator + targetFileName;
+			String targetTextFilePath = tempFolderName + File.separator + targetFileName;
 
 			App.logger.info("About to start unarchiving and collecting text files");
 			
@@ -84,7 +83,7 @@ public class App {
 			do {
 				
 				inputFilePath = inputFolder + inputFileName;
-				recusiveUnzip = unzipper.unzip(inputFilePath, tempFolderString, "zip", true);
+				recusiveUnzip = unzipper.unzip(inputFilePath, tempFolderName, "zip", true);
 
 				if(recusiveUnzip == App.ARCHIVE_NOT_FOUND) {
 				
@@ -103,15 +102,18 @@ public class App {
 				App.logger.debug(listItem);
 				readerWriter.readLargerTextFile(listItem, lines);
 			}
+			
+			App.logger.debug("Lines collected:");
+			for (String lineItem : lines) {
+				App.logger.debug(lineItem);
+			}
+			
 			App.logger.debug("Writing collected lines into a file.");
 			readerWriter.writeLargerTextFile(targetTextFilePath, lines);
-
-			// Extract not unzipping recursively
-			String folderExtractedTo = unzipper.unzip(inputFilePath, tempFolderString, "zip", false);
 			
 			// Parse
-			String targetPhonesFilePath = folderExtractedTo + File.separator + targetPhonesFileName;
-			String targetEmailsFilePath = folderExtractedTo + File.separator + targetEmailsFileName;
+			String targetPhonesFilePath = tempFolderName + File.separator + targetPhonesFileName;
+			String targetEmailsFilePath = tempFolderName + File.separator + targetEmailsFileName;
 			
 			PhoneParser phoneParser = new PhoneParser();
 			phoneParser.parse(lines, targetPhonesFilePath);
@@ -119,12 +121,11 @@ public class App {
 			EmailParser emailParser = new EmailParser();
 			emailParser.parse(lines, targetEmailsFilePath);
 			
-			ZipPacker.zipDir(outputFilePath, folderExtractedTo);
+			new File (targetTextFilePath).delete();
 			
-			tempFolderFile.deleteOnExit();
-			App.logger.debug("Temp folder is requested to be deleted on exit: " + tempFolderString);
+			tempFolderFile.renameTo(outputFile);
+			ZipPacker.checkFolder(outputFile.getParentFile());
 			
-			App.logger.info("Program ran successfully.");
 			App.logger.info("Exiting application.");
 
 		} catch (IOException e) {
@@ -136,8 +137,6 @@ public class App {
 		}
 
 	}
-
-	public static final String ARCHIVE_NOT_FOUND = "archive_not_found";
 	
 	public static int textFilesCounter = 0;
 	public static List<String> textFiles = new ArrayList<String>();
@@ -157,6 +156,38 @@ public class App {
 		} catch (IOException e) {
 			App.logger.error("IOException. Problem reading user input.", e);
 		}
+	}
+	
+	public static boolean deleteAnything(File deleteFile) {
+		Boolean isFolderDeleted = false;
+		if(deleteFile.exists()){
+			if(deleteFile.isDirectory()) {
+				File[] files = deleteFile.listFiles();
+		        if(null!=files){
+		            for(int i=0; i<files.length; i++) {
+		            	deleteAnything(files[i]);
+		            }
+		        }
+		        App.logger.trace("Deleting folder: " + deleteFile);
+			    isFolderDeleted = deleteFile.delete();
+			    if(isFolderDeleted) {
+			    	App.logger.trace("Delete success.");
+			    } else {
+			    	App.logger.error("Delete failed.");
+			    	deleteAnything(deleteFile);
+			    }
+			} else {
+				App.logger.trace("Deleting file: " + deleteFile);
+                Boolean isFileDeleted = deleteFile.delete();
+                if(isFileDeleted) {
+        	    	App.logger.trace("Delete success.");
+        	    } else {
+        	    	App.logger.error("Delete failed.");
+        	    	deleteAnything(deleteFile);
+        	    }
+			}
+	    }
+	    return isFolderDeleted;
 	}
 
 }
