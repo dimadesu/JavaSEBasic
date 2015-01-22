@@ -7,7 +7,9 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -105,19 +107,19 @@ public class App {
 	        recurser.iterateDirectoryContents(new File(recusiveUnzipResult), null, false);
 			
 			// Log all the text files found
-			List<String> lines = new ArrayList<String>();
+	        // Using Set will get rid of duplicates 
+	        Set<String> linesSet = new HashSet<String>();
 			for (String listItem : App.textFiles) {
 				App.logger.debug(listItem);
-				readerWriter.readLargerTextFile(listItem, lines);
+				readerWriter.readLargerTextFile(listItem, linesSet);
 			}
+	        // Convert Set to List, since lists can be sorted
+			List<String> lines = new ArrayList<String>(linesSet);
 			
 			App.logger.debug("Lines collected:");
 			for (String lineItem : lines) {
 				App.logger.debug(lineItem);
 			}
-			
-			App.logger.debug("Writing collected lines into a file.");
-			readerWriter.writeLargerTextFile(targetTextFilePath, lines);
 			
 			// Parse
 			String targetPhonesFilePath = tempFolderName + File.separator + targetPhonesFileName;
@@ -129,8 +131,6 @@ public class App {
 			EmailParser emailParser = new EmailParser();
 			emailParser.parse(lines, targetEmailsFilePath);
 			
-			new File (targetTextFilePath).delete();
-			
 			tempFolderFile.renameTo(outputFile);
 			ZipPacker.checkFolder(outputFile.getParentFile());
 			
@@ -138,10 +138,8 @@ public class App {
 
 		} catch (IOException e) {
 			App.logger.fatal("IOException. Exiting application.", e);
-			App.pause();
 		} catch (Exception e) {
 			App.logger.fatal("Unknown exception. Exiting application.", e);
-			App.pause();
 		}
 
 	}
@@ -154,16 +152,6 @@ public class App {
 		App.textFiles.add(path);
 		App.logger.info("Text file found. Total text files so far: "
 				+ textFilesCounter);
-	}
-	
-	public static void pause () {
-		// Pause
-		App.logger.info("Press Enter key to proceed");
-		try {
-			System.in.read();
-		} catch (IOException e) {
-			App.logger.error("IOException. Problem reading user input.", e);
-		}
 	}
 
 }

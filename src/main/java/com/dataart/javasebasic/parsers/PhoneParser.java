@@ -62,8 +62,8 @@ public class PhoneParser {
 			}
 
 			// Change phone to format in the task
-			phone = "+" + phone.charAt(0) + " (" + phone.substring(1, 5) + ") "
-					+ phone.substring(6);
+			phone = "+" + phone.charAt(0) + " (" + phone.substring(1, 4) + ") "
+					+ phone.substring(5);
 			phonesReplaced.add(phone);
 		}
 

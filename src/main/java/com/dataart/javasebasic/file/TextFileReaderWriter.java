@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import com.dataart.javasebasic.App;
 
@@ -33,7 +34,7 @@ public class TextFileReaderWriter {
 
 	// For larger files
 
-	public void readLargerTextFile(String aFileName, List<String> linesAllFiles) {
+	public void readLargerTextFile(String aFileName, Set<String> linesAllFiles) {
 		Path path = Paths.get(aFileName);
 		Integer lineCounter = 0;
 		App.logger.debug("Reading file: " + path);
@@ -41,7 +42,7 @@ public class TextFileReaderWriter {
 			while (scanner.hasNextLine()) {
 				// process each line in some way
 				String line = scanner.nextLine();
-				if (!linesAllFiles.contains(line) && !line.isEmpty()) {
+				if (!line.isEmpty()) {
 					linesAllFiles.add(line);
 				}
 				lineCounter++;
