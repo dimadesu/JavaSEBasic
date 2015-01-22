@@ -105,7 +105,7 @@ public class App {
 			TextFileReaderWriter readerWriter = new TextFileReaderWriter();
 			for (String listItem : App.textFiles) {
 				logger.debug(listItem);
-				readerWriter.readLargerTextFile(listItem, linesSet);
+				readerWriter.readLargerTextFileAlternate(listItem, linesSet);
 			}
 	        // Convert Set to List, since lists can be sorted
 			List<String> lines = new ArrayList<String>(linesSet);

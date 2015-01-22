@@ -39,7 +39,6 @@ public class TextFileReaderWriter {
 
 	public void readLargerTextFile(String aFileName, Set<String> linesAllFiles) {
 		Path path = Paths.get(aFileName);
-		Integer lineCounter = 0;
 		logger.debug("Reading file: " + path);
 		try (Scanner scanner = new Scanner(path, ENCODING.name())) {
 			while (scanner.hasNextLine()) {
@@ -48,25 +47,26 @@ public class TextFileReaderWriter {
 				if (!line.isEmpty()) {
 					linesAllFiles.add(line);
 				}
-				lineCounter++;
 			}
 		} catch (IOException e) {
 			logger.error("Could not read text file.", e);
 		}
 	}
 
-	public List<String> readLargerTextFileAlternate(String aFileName)
-			throws IOException {
+	public void readLargerTextFileAlternate(String aFileName, Set<String> linesAllFiles) {
 		Path path = Paths.get(aFileName);
-		List<String> lines = new ArrayList<String>();
+		logger.debug("Reading file: " + path);
 		try (BufferedReader reader = Files.newBufferedReader(path, ENCODING)) {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				// process each line in some way
-				lines.add(line);
+				if (!line.isEmpty()) {
+					linesAllFiles.add(line);
+				}
 			}
+		} catch (IOException e) {
+			logger.error("Could not read text file.", e);
 		}
-		return lines;
 	}
 
 	public void writeLargerTextFile(String aFileName, List<String> aLines) {
