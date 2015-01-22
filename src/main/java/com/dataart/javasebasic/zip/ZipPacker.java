@@ -169,7 +169,7 @@ public class ZipPacker {
 	    return isFolderDeleted;
 	}
 	
-	static boolean isZipValid(final File file) {
+	public static boolean isZipValid(final File file) {
 	    ZipFile zipfile = null;
 	    try {
 	        zipfile = new ZipFile(file);

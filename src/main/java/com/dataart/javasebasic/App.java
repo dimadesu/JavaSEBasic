@@ -49,8 +49,8 @@ public class App {
 				jarFile = new File(jarDecodedPath);
 				jarFolder = jarFile.getParent() + "/";
 				logger.debug("jarFolder: " + jarFolder);
-			} catch (UnsupportedEncodingException e1) {
-				logger.error("UnsupportedEncodingException", e1);
+			} catch (UnsupportedEncodingException e) {
+				logger.error("UnsupportedEncodingException", e);
 			}
 			
 			// If path was not supplied via program argument, then search for zip inside the folder jar is executed from
@@ -59,6 +59,24 @@ public class App {
 			} else {
 				inputFolder = args[0] + "/";
 			}
+			
+			String inputFilePath;
+			Boolean isZipPathValid = false;
+
+			do {
+				
+				inputFilePath = inputFolder + inputFileName;
+				
+				isZipPathValid = ZipPacker.isZipValid(new File(inputFilePath));
+				if(!isZipPathValid) {
+				
+					logger.info("Please enter path to the folder constaining inputs.zip");
+					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+					inputFolder = br.readLine() +  "/";
+				
+				}
+					
+			} while (!isZipPathValid);
 			
 			// Input. Output
 			File outputFile = new File (jarFolder + App.outputFileName + App.ARCHIVE_INDICATOR);
@@ -70,35 +88,12 @@ public class App {
 			}
 			tempFolderFile.mkdir();
 			logger.debug("Temp folder created: " + tempFolderName);
-			
-			// Target paths for parsed file
-			String targetPhonesFileName = "phones.txt";
-			String targetEmailsFileName = "emails.txt";
 
 			logger.info("About to start unarchiving and collecting text files");
 			
 			// Unarchive recursively. Collect text files
 			ZipUnpacker unzipper = new ZipUnpacker();
-			
-			String inputFilePath;
-			String recusiveUnzipResult;
-
-			do {
-				
-				inputFilePath = inputFolder + inputFileName;
-				recusiveUnzipResult = unzipper.unzip(inputFilePath, jarFolder, "zip", true);
-
-				if(recusiveUnzipResult == App.ARCHIVE_NOT_FOUND) {
-				
-					logger.info("Please enter path to the folder constaining inputs.zip");
-					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-					inputFolder = br.readLine() +  "/";
-				
-				}
-					
-			} while (recusiveUnzipResult == App.ARCHIVE_NOT_FOUND);
-
-			TextFileReaderWriter readerWriter = new TextFileReaderWriter();
+			String recusiveUnzipResult = unzipper.unzip(inputFilePath, jarFolder, "zip", true);
 			
 			// Replace phone codes
 	        RecursiveFileIterator recurser = new RecursiveFileIterator();
@@ -107,6 +102,7 @@ public class App {
 			// Log all the text files found
 	        // Using Set will get rid of duplicates 
 	        Set<String> linesSet = new HashSet<String>();
+			TextFileReaderWriter readerWriter = new TextFileReaderWriter();
 			for (String listItem : App.textFiles) {
 				logger.debug(listItem);
 				readerWriter.readLargerTextFile(listItem, linesSet);
@@ -118,6 +114,10 @@ public class App {
 			for (String lineItem : lines) {
 				logger.debug(lineItem);
 			}
+			
+			// Target paths for parsed file
+			String targetPhonesFileName = "phones.txt";
+			String targetEmailsFileName = "emails.txt";
 			
 			// Parse
 			String targetPhonesFilePath = tempFolderName + File.separator + targetPhonesFileName;
