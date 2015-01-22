@@ -5,10 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import com.dataart.javasebasic.App;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.dataart.javasebasic.file.TextFileReaderWriter;
 
 public class EmailParser {
+	
+	private final Logger logger = LogManager.getLogger("AppLogger");
 	
 	public void parse(List<String> lines, String targetEmailsFilePath) {
 		List<String> emails = new ArrayList<String>();
@@ -27,9 +31,9 @@ public class EmailParser {
 		Collections.sort(emails);
 
 		// Log
-		App.logger.info("Emails collected:");
+		logger.info("Emails collected:");
 		for (String email : emails) {
-			App.logger.info(email);
+			logger.info(email);
 		}
 
 		// Write to file

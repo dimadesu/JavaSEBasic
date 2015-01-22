@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.dataart.javasebasic.App;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.dataart.javasebasic.file.TextFileReaderWriter;
 
 public class PhoneParser {
+	
+	private final Logger logger = LogManager.getLogger("AppLogger");
 	
 	public void parse (List<String> lines, String targetPhonesFilePath) {
 
@@ -69,11 +73,11 @@ public class PhoneParser {
 
 		// Sort
 		Collections.sort(phonesReplaced);
-		App.logger.info("Phones collected:");
+		logger.info("Phones collected:");
 
 		// Log results to console
 		for (String phone : phonesReplaced) {
-			App.logger.info(phone);
+			logger.info(phone);
 		}
 
 		// Save results to a file

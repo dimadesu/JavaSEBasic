@@ -8,11 +8,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.dataart.javasebasic.zip.ZipPacker;
 import com.dataart.javasebasic.zip.ZipUnpacker;
 import com.dataart.javasebasic.App;
 
 public class RecursiveFileIterator {
+	
+	private final Logger logger = LogManager.getLogger("AppLogger");
 	
 	public void iterateDirectoryContents(File sourceDir, String targetDirPath, Boolean isUnzip) {
 		try {
@@ -21,12 +26,12 @@ public class RecursiveFileIterator {
 				
 				if (file.isDirectory()) {
 					
-					App.logger.debug("Directory: " + file.getName());
+					logger.debug("Directory: " + file.getName());
 					iterateDirectoryContents(file, null, isUnzip);
 					
 				} else {
 					
-					App.logger.debug("File: " + file.getCanonicalPath());
+					logger.debug("File: " + file.getCanonicalPath());
 					
 					if (isUnzip) {
 
@@ -57,7 +62,7 @@ public class RecursiveFileIterator {
 			            	byte[] buffer = new byte[512 * 8];
 			            	int readLength;
 		                    while ((readLength = bis.read(buffer)) != -1) {
-		                    	App.logger.trace(" buffer: " + buffer);
+		                    	logger.trace(" buffer: " + buffer);
 		                    	String chunk = new String(buffer)
 					                    .replace("(101)", "(401)")
 					                    .replace("(202)", "(802)")
@@ -69,11 +74,11 @@ public class RecursiveFileIterator {
 				        }
 				        catch(FileNotFoundException e)
 				        {
-				        	App.logger.error("File was not found!", e);
+				        	logger.error("File was not found!", e);
 				        }
 				        catch(IOException e)    
 				        {
-				        	App.logger.error("No file found!", e);
+				        	logger.error("No file found!", e);
 				        }
 						
 						ZipPacker.deleteAnything(file);
@@ -85,7 +90,7 @@ public class RecursiveFileIterator {
 				}
 			}
 		} catch (IOException e) {
-			App.logger.error("IOException. Could not get file canonical path", e);
+			logger.error("IOException. Could not get file canonical path", e);
 		}
 	}
 	

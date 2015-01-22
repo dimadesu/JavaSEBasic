@@ -23,7 +23,7 @@ import com.dataart.javasebasic.zip.ZipUnpacker;
 
 public class App {
 	
-	public static final Logger logger = LogManager.getLogger("AppLogger");
+	private final static Logger logger = LogManager.getLogger("AppLogger");
 	
 	public static final String inputFileName = "inputs.zip";
 	public static final String outputFileName = "inputsv2.zip";
@@ -34,7 +34,7 @@ public class App {
 
 		try {
 			
-			App.logger.info("Entering application.");
+			logger.info("Entering application.");
 			
 			String inputFolder = null;
 			File jarFile = null;
@@ -48,9 +48,9 @@ public class App {
 				jarDecodedPath = URLDecoder.decode(jarPath, "UTF-8");
 				jarFile = new File(jarDecodedPath);
 				jarFolder = jarFile.getParent() + "/";
-				App.logger.debug("jarFolder: " + jarFolder);
+				logger.debug("jarFolder: " + jarFolder);
 			} catch (UnsupportedEncodingException e1) {
-				App.logger.error("UnsupportedEncodingException", e1);
+				logger.error("UnsupportedEncodingException", e1);
 			}
 			
 			// If path was not supplied via program argument, then search for zip inside the folder jar is executed from
@@ -69,15 +69,13 @@ public class App {
 				ZipPacker.deleteAnything(tempFolderFile);
 			}
 			tempFolderFile.mkdir();
-			App.logger.debug("Temp folder created: " + tempFolderName);
+			logger.debug("Temp folder created: " + tempFolderName);
 			
 			// Target paths for parsed file
-			String targetFileName = "phones.txt_emails.txt";
 			String targetPhonesFileName = "phones.txt";
 			String targetEmailsFileName = "emails.txt";
-			String targetTextFilePath = tempFolderName + File.separator + targetFileName;
 
-			App.logger.info("About to start unarchiving and collecting text files");
+			logger.info("About to start unarchiving and collecting text files");
 			
 			// Unarchive recursively. Collect text files
 			ZipUnpacker unzipper = new ZipUnpacker();
@@ -92,7 +90,7 @@ public class App {
 
 				if(recusiveUnzipResult == App.ARCHIVE_NOT_FOUND) {
 				
-					App.logger.info("Please enter path to the folder constaining inputs.zip");
+					logger.info("Please enter path to the folder constaining inputs.zip");
 					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 					inputFolder = br.readLine() +  "/";
 				
@@ -110,15 +108,15 @@ public class App {
 	        // Using Set will get rid of duplicates 
 	        Set<String> linesSet = new HashSet<String>();
 			for (String listItem : App.textFiles) {
-				App.logger.debug(listItem);
+				logger.debug(listItem);
 				readerWriter.readLargerTextFile(listItem, linesSet);
 			}
 	        // Convert Set to List, since lists can be sorted
 			List<String> lines = new ArrayList<String>(linesSet);
 			
-			App.logger.debug("Lines collected:");
+			logger.debug("Lines collected:");
 			for (String lineItem : lines) {
-				App.logger.debug(lineItem);
+				logger.debug(lineItem);
 			}
 			
 			// Parse
@@ -134,12 +132,12 @@ public class App {
 			tempFolderFile.renameTo(outputFile);
 			ZipPacker.checkFolder(outputFile.getParentFile());
 			
-			App.logger.info("Exiting application.");
+			logger.info("Exiting application.");
 
 		} catch (IOException e) {
-			App.logger.fatal("IOException. Exiting application.", e);
+			logger.fatal("IOException. Exiting application.", e);
 		} catch (Exception e) {
-			App.logger.fatal("Unknown exception. Exiting application.", e);
+			logger.fatal("Unknown exception. Exiting application.", e);
 		}
 
 	}
@@ -150,7 +148,7 @@ public class App {
 	public static void textFileFound(String path) {
 		App.textFilesCounter++;
 		App.textFiles.add(path);
-		App.logger.info("Text file found. Total text files so far: "
+		logger.info("Text file found. Total text files so far: "
 				+ textFilesCounter);
 	}
 

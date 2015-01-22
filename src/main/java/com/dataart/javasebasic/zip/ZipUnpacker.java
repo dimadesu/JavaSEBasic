@@ -11,14 +11,19 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.dataart.javasebasic.file.RecursiveFileIterator;
 import com.dataart.javasebasic.App;
  
 public class ZipUnpacker {
 	
+	private final Logger logger = LogManager.getLogger("AppLogger");
+	
     public String unzip(String archiveFilePath, String destDirectory, String extension, Boolean isUnzipRecursively) {
         
-        App.logger.debug(extension + " archive path requested for unzipping: " + archiveFilePath);
+        logger.debug(extension + " archive path requested for unzipping: " + archiveFilePath);
         
         File archiveFile = new File(archiveFilePath);
         
@@ -34,13 +39,13 @@ public class ZipUnpacker {
 	            	destDir.mkdir();            	
 	            }
 	            
-	            App.logger.debug("Unzipping into directory: " + destDir);
+	            logger.debug("Unzipping into directory: " + destDir);
 	        	
 	        	ZipInputStream zipIn = null;
 				try {
 					zipIn = new ZipInputStream(new FileInputStream(archiveFilePath));
 				} catch (FileNotFoundException e) {
-					App.logger.error("Archive not found", e);
+					logger.error("Archive not found", e);
 					return (App.ARCHIVE_NOT_FOUND);
 				}
 		        ZipEntry entry = zipIn.getNextEntry();
@@ -83,7 +88,7 @@ public class ZipUnpacker {
     	
 		} catch (IOException e) {
 			
-			App.logger.error("IOException", e);
+			logger.error("IOException", e);
 			
 		}
     	
@@ -103,7 +108,7 @@ public class ZipUnpacker {
         }
         bos.close();
         
-        App.logger.debug("Extracted to: " + filePath);
+        logger.debug("Extracted to: " + filePath);
         
         // Add to text files if extracted is not archive
         File extractedFile = new File (filePath);
